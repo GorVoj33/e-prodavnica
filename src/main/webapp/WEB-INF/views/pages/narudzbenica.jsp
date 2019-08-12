@@ -12,6 +12,7 @@
    
     
     <div class="container col-md-6 col-md-offset-3">
+                   
         <h3 class="section-heading">Adresa isporuke</h3>
         <form:form modelAttribute="adresaFORM" id="formAdresaNarudzbenice" action="${pageContext.request.contextPath}/narudzbenica/kreiraj/${narudzbenica.korpa.korpaId}" method="post">
             <div class="form-group">
@@ -28,8 +29,8 @@
                 <label for="adresaFORM.postanskiKod">Postanski kod</label><form:errors path="postanskiKod" cssStyle="color: red" />
                 <form:input path="postanskiKod" id="adresaFORM.postanskiKod" cssClass="form-control" />
             </div><br>
-            <input type="submit" class="btn btn-success" value="Sacuvaj adresu" />
-            </form:form>
+            <input type="submit" class="btn btn-success" value="Sacuvaj novu adresu" />
+    </form:form>
         
     </div>
             
@@ -38,7 +39,7 @@
         <h3 class="section-heading">Osnovne informacije o kupcu </h3>
            
         <div class="form-group">
-                <label for="narudzbanica.profil.ime">Ime</label>
+                <label for="ime">Ime</label>
                 <form:input path="narudzbenica.profil.ime" id="ime" cssClass="form-control" disabled="true"/>
             </div>
             
@@ -58,7 +59,8 @@
         <h4>${datum}</h4>
         <br><br>
     </div>        
-            
+      
+        
     <div class="container col-md-6 col-md-offset-3">
         <h3 class="section-heading">Stanje artikala u korpi</h3>
     </div>
@@ -118,4 +120,18 @@
 				</table>
                     </div> 
         
+                                                            
+          
 </section>
+                                                        
+                                                        
+<!--<script>
+  // checking for email on narudzbenica.jsp
+  $('#checkemail').live('change', function(){
+      if ( $(this).is(':checked') ) {
+         $('#email').show();
+     } else {
+         $('#email').hide();
+     }
+ });                                                     
+</script>-->

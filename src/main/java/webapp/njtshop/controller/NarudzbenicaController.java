@@ -12,6 +12,11 @@ import java.util.Date;
 import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,6 +24,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import webapp.njtshop.domain.AdresaIsporuke;
 import webapp.njtshop.domain.Artikal;
 import webapp.njtshop.domain.Korpa;
@@ -51,6 +57,11 @@ public class NarudzbenicaController {
     
     @Autowired
     ArtikalService artikalService;
+    
+    
+    @Autowired
+    JavaMailSender mailSender;
+    
     
     @RequestMapping(value= "kreiraj/{korpaId}")
     public String kreirajNarudzbenicu(@PathVariable("korpaId") int korpaId, Model model){
@@ -107,6 +118,8 @@ public class NarudzbenicaController {
 
     @RequestMapping(value = "new/{korpaId}/potvrdi")
     public String zavrsiKupovinu(@PathVariable("korpaId") int korpaId,
+                        //@RequestParam(name="user_email", required = false) String email,
+                        //@RequestParam(value="email",required = false) String email,
                         Model model){
         Korpa korpa = korpaService.getByID(korpaId);
         Profil profil = korpa.getProfil();
@@ -130,8 +143,34 @@ public class NarudzbenicaController {
         korpa.setUkupnaCenaKorpe(0);
         korpaService.addOrUpdate(korpa);
         ocistiKorpu(korpa);
-
+               
         return "uspesnoPoruceno";
+    }
+    
+    @RequestMapping(value = "{narudzbenicaId}/sendMail", method = RequestMethod.POST)
+    public String posaljiMailKorisniku(@PathVariable("narudzbenicaId") int narId, 
+            @RequestParam("email") String email, 
+            Model model){
+        
+        
+        Narudzbenica narudzbenica = narudzbenicaService.getById(narId);
+        boolean sent = posaljiMail(email, narudzbenica);
+        if(sent== false) {
+            model.addAttribute("message", "Nepravilno unesen email!");
+            return "uspesnoPoruceno";
+        }
+        
+        model.addAttribute("message", "Email poslat! Proverite vas email inbox.");
+        return "uspesnoPoruceno";
+    }    
+    @RequestMapping(value = "logged/all")
+    public String vratiSveNarudzbeniceUlogovanog (Model model){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentPrincipalName = authentication.getName();
+        Profil ulogovaniProfil = profilService.getProfilByUsername(currentPrincipalName);
+        List<Narudzbenica> list = narudzbenicaService.getAllByProfileId(ulogovaniProfil.getProfilId());
+        model.addAttribute("sveNarudzbenice", list);
+        return "istorijaNarucivanja";
     }
     
     private String formatDate(Date date) {
@@ -169,6 +208,30 @@ public class NarudzbenicaController {
             a.setKolicinaZaProdaju(a.getKolicinaZaProdaju() - sk.getKolicina());
             artikalService.add(a);
         }
+    }
+
+    private boolean posaljiMail(String email, Narudzbenica narudzbenica) {
+        try{
+            SimpleMailMessage mail = new SimpleMailMessage();
+            System.out.println("Email: "+email);
+            mail.setTo(email);
+            mail.setSubject("Potvrda narudzbenice");
+            String text = "Postovani "+narudzbenica.getProfil().getIme() + " ,uspesno ste porucili." + "\n" +
+                    " Ukupna vrednost: "+narudzbenica.getUkupno() + "\n"+
+                    " Isporuka na adresu: "+narudzbenica.getAdresaIsporuke().getAdresa()+ ", "+narudzbenica.getAdresaIsporuke().getGrad()+ "\n"+
+                    " Datum kreiranja narudzbenice: "+narudzbenica.getDatum()+ "\n"+
+                    " \nStavke: "+"\n";
+
+                    for (StavkaNarudzbenice sn : narudzbenica.getStavke()){
+                        text += "Artikal: "+sn.getArtikal().getNaziv() + "\tCena artikla sa PDV: "+sn.getArtikal().getCenaSaPDV() + "\tKolicina: "+sn.getKolicina() + "\tVrednost stavke: "+sn.getUkupnaCenaStavke()+ "\n";
+                    }
+            mail.setText(text);
+            mailSender.send(mail);
+            return true;
+        }catch(Exception e){
+            return false;
+        }
+
     }
     
     

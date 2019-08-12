@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -24,10 +25,6 @@ public class HomeController {
             return "redirect:/admin/pocetna";
         }
     }
-    @RequestMapping("/hello")
-    public String hello(){
-        return "hello";
-    }
 
     @RequestMapping("/login")
     public String login(@RequestParam(value = "error", required = false) String error,
@@ -44,4 +41,13 @@ public class HomeController {
         return "login";
     }
 
+    
+    @RequestMapping(value = "/accessdenied", method = RequestMethod.GET)
+    public String accessDenied(Model model) 
+    {
+
+        model.addAttribute("errorMessage", "Pristup ovoj strani imaju samo admini!");
+
+        return "error";
+    }
 }

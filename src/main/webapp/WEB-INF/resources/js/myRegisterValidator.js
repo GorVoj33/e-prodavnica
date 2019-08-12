@@ -49,8 +49,10 @@ $(function(){
          if(username_len < 5 || username_len > 20){
              $("#username_error_msg").html("Username mora biti duzine izmedju 5 i 20 karaktera.")
              $("#username_error_msg").show();
+             $("#registerMe").hide();
              error_username = true;
          }else{
+             $("#registerMe").show();
              $("#username_error_msg").hide(); 
          } 
      }
@@ -73,12 +75,13 @@ $(function(){
          if( !(pass.match(upperCase) && pass.match(lowerCase) && pass.match(numbers))){
              $("#password_error_msg").html("Password mora sadrzati barem jedno veliko slovo, barem jedno malo slovo i barem jedan broj i mora biti barem 8 karaktera");
              $("#password_error_msg").show();
+             $("#registerMe").hide();
              error_password = true;
              
          }
          else{
              $("#password_error_msg").hide();
-             
+             $("#registerMe").show();
          }     
      }
      
@@ -169,7 +172,5 @@ $(function(){
  
      }
 });
-
-
 
 

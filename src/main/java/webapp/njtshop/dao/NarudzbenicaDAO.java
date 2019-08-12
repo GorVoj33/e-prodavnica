@@ -18,4 +18,6 @@ public interface NarudzbenicaDAO {
     void addStavka(StavkaNarudzbenice stavkaNarudzbenice);
     List<StavkaNarudzbenice> getStavkeByNarudzbenicaID(int narudzbenicaId);
     List<Narudzbenica> getAll();
+    Narudzbenica getById(int narId);
+    List<Narudzbenica> getAllByProfileId(int profilId);
 }

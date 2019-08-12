@@ -60,5 +60,28 @@ public class NarudzbenicaDAOImpl implements NarudzbenicaDAO{
         return query.list();
 
     }
+
+    @Override
+    public Narudzbenica getById(int narId) {
+        Session session = sessionFactory.getCurrentSession();
+        Narudzbenica n = (Narudzbenica) session.get(Narudzbenica.class, narId);
+        List<StavkaNarudzbenice> stavke = getStavkeByNarudzbenicaID(narId);
+        n.setStavke(stavke);
+        return n;
+    }
+
+    @Override
+    public List<Narudzbenica> getAllByProfileId(int profilId) {
+        Session session = sessionFactory.getCurrentSession();
+        Query query = session.createQuery("from Narudzbenica where profil_id=?");
+        query.setInteger(0, profilId);
+        List<Narudzbenica> list = query.list();
+        for(Narudzbenica n : list){
+            List<StavkaNarudzbenice> stavke = getStavkeByNarudzbenicaID(n.getNarudzbenicaId());
+            n.setStavke(stavke);
+        } 
+        session.flush();
+        return list;
+    }
     
 }

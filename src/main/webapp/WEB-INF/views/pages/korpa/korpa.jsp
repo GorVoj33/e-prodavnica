@@ -13,6 +13,7 @@
                                 <div class="msg alert-success">
                                 <font size="5">${message}</font></div>
                 </c:if>
+              
     </div>
     <c:choose>
         <c:when test="${not empty stavke}">

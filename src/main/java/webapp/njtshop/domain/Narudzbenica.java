@@ -19,6 +19,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import org.hibernate.validator.constraints.NotBlank;
 
 /**
  *
@@ -48,7 +49,7 @@ public class Narudzbenica {
 
     @OneToMany(mappedBy = "narudzbenica", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<StavkaNarudzbenice> stavke=new ArrayList<>();
-    
+      
     private double ukupno;
     
     public Narudzbenica() {
@@ -117,6 +118,8 @@ public class Narudzbenica {
     public void setUkupno(double ukupno) {
         this.ukupno = ukupno;
     }
+
+    
     
     
 

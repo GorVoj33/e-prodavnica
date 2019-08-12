@@ -7,6 +7,15 @@
 
 <%@include file="/WEB-INF/views/pages/header.jsp"%>
 <section id="portfolio">
+    
+    <div class="container col-md-6 col-md-offset-3">
+                <c:if test="${not empty message}">
+                                <div class="msg alert-success">
+                                <font size="5">${message}</font></div>
+                </c:if>
+              
+    </div>
+    
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-12 text-center">
@@ -112,5 +121,18 @@
 					</tfoot>
 				</table>
                     </div>
+                                                        
+        <div class="container col-md-6 col-md-offset-3">
+            <h3 class="section-heading">Posalji na email<br></h3>
+            <br>
+            <p>Unesite vas email kako biste dobili mail obavestenja o ovoj narudzbenici!</p>
+            <c:url var="send_email" value="${rootContext.request.contextPath}/narudzbenica/${narudzbenica.narudzbenicaId}/sendMail/" />
+            <form action="${send_email}" method="post">
+                <input type="email" name="email" value="" title="Unesite vasu pravu email adresu">
+                <input type="submit"  value="Posalji">           
+            </form>
+            
+            <br><br>
+        </div>
   
 </section>

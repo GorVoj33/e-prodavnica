@@ -42,5 +42,15 @@ public class NarudzbenicaServiceImpl implements NarudzbenicaService{
     public List<Narudzbenica> getAll() {
         return narudzbenicaDAO.getAll();
     }
+
+    @Override
+    public Narudzbenica getById(int narId) {
+        return narudzbenicaDAO.getById(narId);
+    }
+
+    @Override
+    public List<Narudzbenica> getAllByProfileId(int profilId) {
+        return narudzbenicaDAO.getAllByProfileId(profilId);
+    }
     
 }

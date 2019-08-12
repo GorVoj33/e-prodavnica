@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import webapp.njtshop.domain.Artikal;
 import webapp.njtshop.domain.Korpa;
 import webapp.njtshop.domain.Profil;
@@ -62,14 +63,11 @@ public class KorpaController {
         
         model.addAttribute("stavke", stavkaKorpeService.getStavke(korpa.getKorpaId()));
         
-        
-        
-        
         return "korpa/korpa";
     }
     
     @RequestMapping(value = "/artikal/add/{artikalId}")
-    public String dodajArtikalUKorpu(@PathVariable int artikalId, Model model){ 
+    public String dodajArtikalUKorpu(@PathVariable int artikalId, Model model, RedirectAttributes redirectAttributes){ 
         
         StavkaKorpe sk = stavkaKorpeService.getStavkaByArtikalAndKorpa(getKorpaUlogovanogKorisnika().getKorpaId(), artikalId);
         Artikal a = artikalService.getById(artikalId);
@@ -84,7 +82,9 @@ public class KorpaController {
             korpa.getStavke().add(sk);
             korpa.setUkupnaCenaKorpe(korpa.getUkupnaCenaKorpe()+sk.getUkupnaCenaStavke());
             korpaService.addOrUpdate(korpa);
-
+            redirectAttributes.addFlashAttribute("message", "Artikal uspesno dodat u korpu!");
+            
+            //model.addAttribute("message", "Artikal uspesno dodat u korpu!");
             
         }else {
             model.addAttribute("errorMessage", "Ovaj proizvod je vec dodat, pogledajte korpu!");
@@ -92,12 +92,14 @@ public class KorpaController {
         
         }
         return "redirect:/korpa/";
+        //return "korpa/korpa";
         
     }
     
     @RequestMapping(value = "/artikal/{artikalId}/add")
     public String povecajKolicinuStavke(@PathVariable("artikalId") int artikalId,
-                                              Model model){
+                                              Model model,
+                                              RedirectAttributes redirectAttributes){
         ulogovaniProfil = getUlogovaniProfil();
         korpa= getKorpaUlogovanogKorisnika();
         
@@ -112,14 +114,15 @@ public class KorpaController {
         korpa.getStavke().add(sk);
         korpa.izracunajUkupnuCenu();
         korpaService.addOrUpdate(korpa);
-
+        redirectAttributes.addFlashAttribute("message", "Kolicina stavke uspesno povecana!");
         return "redirect:/korpa/";
     
     }
     
     @RequestMapping(value = "/artikal/{artikalId}/remove")
     public String smanjiKolicinuStavke(@PathVariable("artikalId") int artikalId,
-                                              Model model){
+                                              Model model,
+                                              RedirectAttributes redirectAttributes){
         ulogovaniProfil = getUlogovaniProfil();
         korpa= getKorpaUlogovanogKorisnika();
         
@@ -135,14 +138,16 @@ public class KorpaController {
         korpa.getStavke().add(sk);
         korpa.izracunajUkupnuCenu();
         korpaService.addOrUpdate(korpa);
-
+        redirectAttributes.addFlashAttribute("message", "Kolicina stavke uspesno smanjena!");
         //return "redirect:/korpa/";
         return "redirect:/korpa/";
     
     }
     
     @RequestMapping(value = "delete/stavka/{stavkaKorpeId}")
-    public String obrisiStavku(@PathVariable("stavkaKorpeId") int stavkaId, Model model){
+    public String obrisiStavku(@PathVariable("stavkaKorpeId") int stavkaId, 
+                                Model model,
+                                RedirectAttributes redirectAttributes){
         ulogovaniProfil = getUlogovaniProfil();
         korpa= getKorpaUlogovanogKorisnika();
         
@@ -152,6 +157,7 @@ public class KorpaController {
         korpa.izracunajUkupnuCenu();
         stavkaKorpeService.deleteStavka(sk);
         korpaService.addOrUpdate(korpa);
+        redirectAttributes.addFlashAttribute("message", "Stavka uspesno obrisana!");
         return "redirect:/korpa/";
     }
     

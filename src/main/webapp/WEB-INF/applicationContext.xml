@@ -51,6 +51,7 @@
             password-parameter="password" />
         <security:logout
             logout-success-url="/login?logout" />
+        <security:access-denied-handler error-page="/accessdenied"/>
     </security:http>
 
     <security:authentication-manager>

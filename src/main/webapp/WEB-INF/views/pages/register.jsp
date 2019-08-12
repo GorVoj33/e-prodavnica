@@ -65,7 +65,7 @@
             <div class="form-group">
                 <label>Ponovite password</label><br>
                 
-                <input id="re_password" class="form-control"/>
+                <input id="re_password" class="form-control" type="password"/>
                 <span id="re_password_error_msg"></span>
             </div><br>
 

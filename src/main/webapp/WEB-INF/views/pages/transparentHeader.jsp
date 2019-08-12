@@ -71,6 +71,7 @@
                     <li><a>Ulogovan: ${pageContext.request.userPrincipal.name}</a></li>
                     <li><a href="<c:url value="/j_spring_security_logout" />">Logout</a></li>
                     <li><a href="<c:url value="/korpa" />"><span class="glyphicon glyphicon-shopping-cart fa-2x"></span></a></li>
+                    <li><a href="<c:url value="/narudzbenica/logged/all" />">Moje narudzbenice</a></li>
                     <li><a href="<c:url value="/admin/" />">Administracija</a></li>
                 </c:if>
                 <c:if test="${pageContext.request.userPrincipal.name == null}">
